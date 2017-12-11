@@ -16,7 +16,7 @@ class ReleaseSection {
   createButton(asset) {
     let button = this.make('a', 'release-button');
     button.innerText = this.buttonText(asset);
-    button.href = `asset.download`;
+    button.href = `${asset.download}`;
     return button;
   }
 
