@@ -2,7 +2,7 @@ class ReleaseSection {
   constructor(user, repo, containerId) {
     this.user = user;
     this.repo = repo;
-    this.containerId = id;
+    this.containerId = containerId;
     this.title = (div, release) => {
       div.innerText = `Latest: ${release.version}`;
     };
