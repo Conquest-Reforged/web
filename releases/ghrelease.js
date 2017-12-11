@@ -3,12 +3,29 @@ class ReleaseSection {
     this.user = user;
     this.repo = repo;
     this.containerId = containerId;
-    this.title = (div, release) => {
-      div.innerText = `Latest: ${release.version}`;
-    };
-    this.button = (div, asset) => {
-      div.innerText = `${asset.name} (${asset.downloadCount} downloads)`;
-    };
+    this.titleText = release => `Latest: ${release.version}`;
+    this.buttonText = asset => `${asset.name} (${asset.downloadCount} downloads)`;
+  }
+
+  createTitle(release) {
+    let title = this.make('h1', 'release-title');
+    title.innerText = this.titleText(release);
+    return title;
+  }
+
+  createButton(asset) {
+    let button = this.make('a', 'release-button');
+    button.innerText = this.buttonText(asset);
+    button.href = `asset.download`;
+    return button;
+  }
+
+  make(type) {
+    let el = document.createElement(type);
+    for (let i = 1; i < arguments.length; i++) {
+      el.classList.add(arguments[i]);
+    }
+    return el;
   }
 
   load() {
@@ -20,18 +37,18 @@ class ReleaseSection {
 
     let request = new ReleaseRequest(this.user, this.repo);
     request.callback = release => {
-      let titles = document.getElementsByClassName('release-title');
-      if (titles !== undefined && titles.length === 1) {
-        this.title(titles[0], release);
+      container.innerText = '';
+
+      let title = this.createTitle(release);
+      if (title !== undefined) {
+        container.appendChild(title);
       }
 
-      let links = document.createElement('div');
       release.assets.forEach(asset => {
-        let link = document.createElement('a');
-        link.classList.add('release-button');
-        link.href = asset.download;
-        this.button(link, asset);
-        container.appendChild(link);
+        let button = this.createButton(asset);
+        if (button !== undefined) {
+          container.appendChild(button);
+        }
       });
     };
 
