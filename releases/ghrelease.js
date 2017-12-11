@@ -33,8 +33,6 @@ class ReleaseSection {
         this.button(link, asset);
         container.appendChild(link);
       });
-
-      container.appendChild(links);
     };
 
     request.send();
