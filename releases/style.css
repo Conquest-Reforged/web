@@ -1,0 +1,26 @@
+.release-container {
+  width: 80%;
+  margin: auto;
+  font-family: sans-serif;
+}
+
+.release-title {
+  color: #616161;
+}
+
+.release-button {
+  display: block;
+  padding: 20px;
+  margin: 5px;
+  color: white;
+  background-color: #5797EC;
+  text-decoration: none !important;
+}
+
+.release-button:active {
+  background-color: #74A8ED;
+}
+
+.release-button:hover {
+  box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.25);
+}
