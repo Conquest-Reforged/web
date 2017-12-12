@@ -1,26 +1,62 @@
+.release-loader {
+    border: 16px solid #f3f3f3;
+    border-top: 16px solid #3498db;
+    border-radius: 50%;
+    width: 64px;
+    height: 64px;
+    margin: auto;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 .release-container {
   width: 80%;
+  min-width: 400px;
   margin: auto;
   font-family: sans-serif;
 }
 
 .release-title {
   color: #616161;
+  font-size: 25px;
+  font-weight: bolder;
+  padding: 5px 10px;
+}
+
+.button-container {
+  width: 50%;
+  padding: 5px 10px;
+  display: inline-block;
+  box-sizing: border-box;
+  vertical-align: middle;
 }
 
 .release-button {
-  display: block;
+  display: inline-block;
+  box-sizing: border-box;
+  min-width: 180px;
+  width: 100%;
   padding: 20px;
-  margin: 5px;
-  color: white;
-  background-color: #5797EC;
-  text-decoration: none !important;
+  font-size: 20px;
+  border-radius: 2px;
+  text-decoration: none;
+  color: #3498db;
+  background-color: #FFFFFF;
+  box-shadow: 0px 2px 5px 1px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s, filter 0.2s !important;
 }
 
 .release-button:active {
-  background-color: #74A8ED;
+  filter: brightness(96%) !important;
+  box-shadow: 0px 4px 15px 2px rgba(0, 0, 0, 0.3) !important;
+  transition: box-shadow 0.1s, filter 0.1s !important;
 }
 
 .release-button:hover {
-  box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.25);
+  filter: brightness(99%);
+  box-shadow: 0px 3px 10px 1px rgba(0, 0, 0, 0.25);
 }

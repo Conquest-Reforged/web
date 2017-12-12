@@ -3,21 +3,28 @@ class ReleaseSection {
     this.user = user;
     this.repo = repo;
     this.containerId = containerId;
-    this.titleText = release => `Latest: ${release.version}`;
+    this.titleText = release => `Version: ${release.version}`;
     this.buttonText = asset => `${asset.name} (${asset.downloadCount} downloads)`;
   }
 
+  createLoader() {
+    let loader = this.make('div', 'release-loader');
+    return loader;
+  }
+
   createTitle(release) {
-    let title = this.make('h1', 'release-title');
+    let title = this.make('div', 'release-title');
     title.innerText = this.titleText(release);
     return title;
   }
 
   createButton(asset) {
+    let container = this.make('div', 'button-container');
     let button = this.make('a', 'release-button');
     button.innerText = this.buttonText(asset);
     button.href = `${asset.download}`;
-    return button;
+    container.appendChild(button);
+    return container;
   }
 
   make(type) {
@@ -28,6 +35,12 @@ class ReleaseSection {
     return el;
   }
 
+  clear(div) {
+    while (div.hasChildNodes()) {
+      div.removeChild(div.lastChild);
+    }
+  }
+
   load() {
     let container = document.getElementById(this.containerId);
     if (container === undefined) {
@@ -35,9 +48,14 @@ class ReleaseSection {
       return;
     }
 
+    let loader = this.createLoader();
+    container.classList.add('release-container');
+    container.appendChild(loader);
+
+    let self = this;
     let request = new ReleaseRequest(this.user, this.repo);
     request.callback = release => {
-      container.innerText = '';
+      self.clear(container);
 
       let title = this.createTitle(release);
       if (title !== undefined) {
