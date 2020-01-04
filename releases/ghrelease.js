@@ -76,7 +76,7 @@ class ReleaseSection {
 
 // user: String - the github username
 // repo: String - the name of the github repository (owned by 'user')
-// callback: function(Release) - the callback that accepts the retreived Release object
+// callback: function(Release) - the callback that accepts the retrieved Release object
 class ReleaseRequest {
   constructor(user, repo) {
     this.user = user;
@@ -90,29 +90,82 @@ class ReleaseRequest {
     let query = `https://api.github.com/repos/${this.user}/${this.repo}/releases/latest`;
 
     request.onload = function() {
-      if (this.readyState == 4 && this.status == 200) {
+      if (this.readyState === 4 && this.status === 200) {
         let json = JSON.parse(this.responseText);
-        let date = json['published_at'];
-        let version = json['tag_name'];
-        let assets = json['assets'];
-        let results = [];
-
-        for (let i = 0; i < assets.length; i++) {
-          let asset = assets[i];
-          let name = asset['name'];
-          let download = asset['browser_download_url'];
-          let downloadCount = asset['download_count'];
-          results.push(new Asset(name, download, downloadCount));
-        }
-
-        let release = new Release(date, version, results);
-        return callback(release);
+        return callback(parseRelease(json));
       }
     };
 
     request.open("GET", query);
     request.send();
   }
+}
+
+// user: String - the github username
+// repo: String - the name of the github repository (owned by 'user')
+// callback: function(Release) - the callback that accepts an array of Release objects
+class ReleasesRequest {
+  constructor(user, repo) {
+    this.user = user;
+    this.repo = repo;
+    this.callback = release => {};
+  }
+
+  send() {
+    let callback = this.callback;
+    let request = new XMLHttpRequest();
+    let query = `https://api.github.com/repos/${this.user}/${this.repo}/releases`;
+
+    request.onload = function() {
+      if (this.readyState === 4 && this.status === 200) {
+        let json = JSON.parse(this.responseText);
+        let releases = [];
+        for (let i = 0; i < json.length; i++) {
+          releases.push(parseRelease(json[i]));
+        }
+        callback(releases);
+      }
+    };
+
+    request.open("GET", query);
+    request.send();
+  }
+}
+
+function getDownloadTotals(user, repo, callback) {
+  let result = {};
+  let request = new ReleasesRequest(user, repo);
+  request.callback = function(releases) {
+    for (let i = 0; i < releases.length; i++) {
+      let release = releases[i];
+      for (let j = 0; j < release.assets.length; j++) {
+        let asset = release.assets[j];
+        let name = asset.name.endsWith(".exe") ? "exe" : "jar";
+        let count = result[name] || 0;
+        result[name] = count + asset.downloadCount;
+      }
+    }
+    callback(result);
+  };
+  request.send();
+}
+
+function parseRelease(release) {
+  let date = release['published_at'];
+  let version = release['tag_name'];
+  let assets = [];
+  let assetsRaw = release['assets'];
+  for (let i = 0; i < assetsRaw.length; i++) {
+    assets.push(parseAsset(assetsRaw[i]));
+  }
+  return new Release(date, version, assets);
+}
+
+function parseAsset(asset) {
+  let name = asset['name'];
+  let download = asset['browser_download_url'];
+  let downloadCount = asset['download_count'];
+  return new Asset(name, download, downloadCount);
 }
 
 // version: String - the version/tag of the Release

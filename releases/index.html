@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./ghrelease.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            font-size: x-large;
+        }
+    </style>
+</head>
+<body>
+<h3>CR Launcher Downloads</h3>
+<script>
+    getDownloadTotals("Conquest-Reforged", "launcher", function(totals) {
+        document.body.appendChild(createText(`Windows Downloads: ${totals["exe"]}`));
+        document.body.appendChild(createText(`Other Downloads: ${totals["jar"]}`));
+    });
+
+    function createText(text) {
+        let div = document.createElement("div");
+        div.innerText = text;
+        return div;
+    }
+</script>
+</body>
+</html>
